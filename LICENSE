@@ -1,21 +1,40 @@
-MIT License
+NPU Benchmark Source Available License
+Copyright (c) 2025 HIKO1999 GenAI Co., Ltd. All rights reserved.
 
-Copyright (c) 2026 npugenai
+TERMS AND CONDITIONS
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+1. PERMITTED USE
+   Personal, educational, and non-commercial use of this software
+   is permitted free of charge, subject to the conditions below.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+2. REQUIRED ATTRIBUTION
+   Any use, distribution, or display of this software or its output
+   must clearly attribute the original work as follows:
+   "NPU Benchmark by HIKO1999 GenAI Co., Ltd. (npubenchmark.org)"
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+3. RESTRICTIONS
+   You may NOT, without prior written permission from HIKO1999 GenAI Co., Ltd.:
+   a) Use this software for commercial purposes
+   b) Sell, sublicense, or monetize this software or derivatives
+   c) Remove or alter any copyright notices or attribution
+   d) Distribute modified versions of this software
+   e) Use this software as part of a competing product or service
+
+4. COMMERCIAL LICENSING
+   For commercial use, enterprise deployment, or OEM licensing,
+   contact: license@npugenai.com
+
+5. DISCLAIMER
+   THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
+   HIKO1999 GENAI CO., LTD. SHALL NOT BE LIABLE FOR ANY DAMAGES
+   ARISING FROM THE USE OF THIS SOFTWARE.
+
+6. GOVERNING LAW
+   This license shall be governed by applicable international
+   intellectual property law.
+
+---
+For permissions beyond the scope of this license:
+Website : https://www.npugenai.com
+Benchmark: https://www.npubenchmark.org
+Email   : license@npugenai.com
