@@ -1,5 +1,5 @@
 NPU Benchmark Source Available License
-Copyright (c) 2025 HIKO1999 GenAI Co., Ltd. All rights reserved.
+Copyright (c) 2025 NPU GenAI. All rights reserved.
 
 TERMS AND CONDITIONS
 
@@ -10,10 +10,10 @@ TERMS AND CONDITIONS
 2. REQUIRED ATTRIBUTION
    Any use, distribution, or display of this software or its output
    must clearly attribute the original work as follows:
-   "NPU Benchmark by HIKO1999 GenAI Co., Ltd. (npubenchmark.org)"
+   "NPU Benchmark by NPU GenAI (npubenchmark.org)"
 
 3. RESTRICTIONS
-   You may NOT, without prior written permission from HIKO1999 GenAI Co., Ltd.:
+   You may NOT, without prior written permission from NPU GenAI:
    a) Use this software for commercial purposes
    b) Sell, sublicense, or monetize this software or derivatives
    c) Remove or alter any copyright notices or attribution
@@ -22,12 +22,12 @@ TERMS AND CONDITIONS
 
 4. COMMERCIAL LICENSING
    For commercial use, enterprise deployment, or OEM licensing,
-   contact: license@npugenai.com
+   contact: hiko1999@hiko1999.com
 
 5. DISCLAIMER
    THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
-   HIKO1999 GENAI CO., LTD. SHALL NOT BE LIABLE FOR ANY DAMAGES
-   ARISING FROM THE USE OF THIS SOFTWARE.
+   NPU GENAI SHALL NOT BE LIABLE FOR ANY DAMAGES ARISING FROM
+   THE USE OF THIS SOFTWARE.
 
 6. GOVERNING LAW
    This license shall be governed by applicable international
