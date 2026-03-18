@@ -87,8 +87,6 @@ Visit **[npubenchmark.org/download](https://www.npubenchmark.org/download.html)*
 
 ## Global Leaderboard
 
-Top results from the community:
-
 | Rank | Device | Score | TOPS |
 |---|---|---|---|
 | 🥇 1 | AMD Ryzen AI Max+ 395 | 1156 | 55 |
@@ -106,7 +104,7 @@ Top results from the community:
 This project is licensed under the **NPU Benchmark Source Available License**.  
 Free for personal and non-commercial use. Commercial use requires written permission.
 
-© 2025 HIKO1999 GenAI Co., Ltd. — [hiko1999@hiko1999.com](mailto:hiko1999@hiko1999.com)
+© 2025 NPU GenAI — [hiko1999@hiko1999.com](mailto:hiko1999@hiko1999.com)
 
 ---
 
