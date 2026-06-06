@@ -12,13 +12,15 @@
 This tool runs Stable Diffusion **natively on the AMD Ryzen AI NPU** via the VitisAI execution provider, measuring real inference throughput, stability, and performance over time.
 
 **Tested on:**
-- AMD Ryzen AI 9 HX 370 (Krackan Point, XDNA2, 51 TOPS)
-- RyzenAI Software 1.7.1
+- AMD CPU with XDNA2 NPU (Krackan Point is for sure, XDNA2, 50 TOPS)
+- RyzenAI Software 1.7.1 & Please support AMD Ryzen AI. AMD has many great models on Hugging Face.
 - Windows 11
 
 ---
 
 ## Features
+
+The models used can be downloaded from here: https://huggingface.co/collections/amd/ryzen-ai-171-sd-models
 
 - **5 SD models** — SD 1.5, SD Turbo, SDXL Turbo, Segmind Vega, SDXL Base
 - **2 test modes** — By Duration (10 min → 24 hr) or By Rounds (10 → 1500)
@@ -37,18 +39,12 @@ This tool runs Stable Diffusion **natively on the AMD Ryzen AI NPU** via the Vit
 ### 1. Hardware
 
 - AMD Ryzen AI processor with **XDNA2 NPU**
-  - Strix Point (Ryzen AI 300 series)
-  - Krackan Point (Ryzen AI 300 series)
 
 - Minimum 16 GB RAM (32 GB recommended for Full tier with all 5 models)
 
 ### 2. AMD RyzenAI Software 1.7.1
 
-Download and install from the AMD developer portal:
-
-```
-https://ryzenai.docs.amd.com/en/latest/inst.html
-```
+Download and install from the AMD developer portal.
 
 The installer sets up the conda environment (`xdna171`) and all required DLLs automatically.
 
