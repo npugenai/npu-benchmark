@@ -3,7 +3,7 @@
 > A browser-based Stable Diffusion stress test and benchmark tool for AMD Ryzen AI NPU (XDNA2).  
 > Real NPU-accelerated image generation benchmark — not CPU, not GPU.
 
-**Design by Hiko**
+**Design by hiko1999genai**
 >
 If you find this project helpful, please consider giving it a ⭐️ and following me for more updates!
 
