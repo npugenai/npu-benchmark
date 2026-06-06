@@ -4,6 +4,8 @@
 > Real NPU-accelerated image generation benchmark — not CPU, not GPU.
 
 **Design by Hiko**
+>
+If you find this project helpful, please consider giving it a ⭐️ and following me for more updates!
 
 ---
 
