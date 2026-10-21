@@ -3,7 +3,7 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="assets/banner-light.svg">
-  <img alt="NPU Benchmark —— 在 AMD Ryzen AI NPU 上运行的 Stable Diffusion 耐久测试" src="assets/banner-light.svg" width="100%">
+  <img alt="NPU Benchmark——在 AMD Ryzen AI NPU 上运行的 Stable Diffusion 耐久测试" src="assets/banner-light.svg" width="100%">
 </picture>
 
 <br/>
@@ -31,12 +31,12 @@
 
 | | |
 |---|---|
-| 🧠 **真正的 NPU 推理** | Stable Diffusion 通过 VitisAI 执行提供程序（Execution Provider）运行在 XDNA2 NPU 上 |
+| 🧠 **真正的 NPU 推理** | Stable Diffusion 通过 VitisAI 执行提供程序（Execution Provider，EP）运行在 XDNA2 NPU 上 |
 | 🖼️ **5 个 SD 模型** | SD 1.5 · SD Turbo · SDXL Turbo · Segmind Vega · SDXL Base |
 | ⏱️ **耐久测试模式** | 按时长（10 分钟 → 24 小时）或按轮数（10 → 1500 轮） |
 | 📈 **实时仪表盘** | 实时图片墙 + 图片数、失败数、img/hr、it/s、NPU %、CPU % |
 | 🌡️ **稳定性分析** | 按模型对比前期与后期的运行耗时，帮你发现降频或内存压力问题 |
-| 📝 **文本报告** | 一键生成——自动保存为 `.txt` 文件 |
+| 📝 **文本报告** | 一键生成——以 `.txt` 文件写入 `endurance_results/`，与自动保存的检查点和性能图表放在一起 |
 | 🎨 **60 个场景提示词** | 风景、城市、奇幻、科幻……全部可自由编辑 |
 
 ---
@@ -108,17 +108,19 @@ npu-benchmark/
 
 ### RyzenAI 安装路径
 
-程序会通过 `RYZEN_AI_INSTALLATION_PATH`（由 AMD 安装程序设置）查找 RyzenAI，找不到时回退到 `C:\Program Files\RyzenAI\1.7.1`。如果你的 RyzenAI 装在其他位置，请把 `DD_ROOT` 指向 `GenAI-SD` 文件夹：
+程序会通过 `RYZEN_AI_INSTALLATION_PATH`（AMD 安装程序会自动设置该变量）定位 RyzenAI 的 SD 脚本和运行时；未设置该变量时，则回退到 `C:\Program Files\RyzenAI\1.7.1`。如果你的 RyzenAI 装在其他位置，而该变量又不存在，请在启动程序前把它设置为安装根目录：
 
 ```powershell
 # PowerShell
-$env:DD_ROOT = "D:\RyzenAI\1.7.1\GenAI-SD"
+$env:RYZEN_AI_INSTALLATION_PATH = "D:\RyzenAI\1.7.1"
 ```
 
 ```bat
-:: 命令提示符 (cmd.exe)
-set "DD_ROOT=D:\RyzenAI\1.7.1\GenAI-SD"
+:: 命令提示符（cmd.exe）
+set "RYZEN_AI_INSTALLATION_PATH=D:\RyzenAI\1.7.1"
 ```
+
+`DD_ROOT` 会传递给 SD 脚本，默认值为 `<install root>\GenAI-SD`；通常无需手动设置。
 
 ---
 
@@ -128,9 +130,9 @@ set "DD_ROOT=D:\RyzenAI\1.7.1\GenAI-SD"
 |---------|---------|---------|
 | Mode（模式） | By Duration（按时长）/ By Rounds（按轮数） | By Duration |
 | Duration（时长） | 10 min · 30 min · 1 h · 2 h · 8 h · 12 h · 24 h · Custom（自定义） | 1 hour |
-| Rounds（轮数） | 10 · 100 · 500 · 1000 · 1500 · Custom（自定义） | 100 |
+| Rounds（轮数） | 10 · 100 · 500 · 1000 · 1500 · Custom（自定义）——轮数指所有模型合计生成的图片总数 | 100 |
 | Tier（档位） | Lite（SD 1.5 + SD Turbo）/ Full（全部 5 个模型） | 根据内存容量自动选择（≥ 28 GB → Full） |
-| Seed（种子） | Random（用于压力测试）/ Fixed（用于可复现的对比测试） | Random |
+| Seed（种子） | Random——每张图片使用一个新种子（1001、1002……，因此测试可以复现）/ Fixed——每张图片都使用同一个种子 | Random |
 
 **实时指标**（每 2 秒刷新一次）：
 
@@ -139,63 +141,88 @@ set "DD_ROOT=D:\RyzenAI\1.7.1\GenAI-SD"
 | Images | 成功生成的图片数 |
 | Failed | 失败或超时的运行次数 |
 | img/hr | 实际吞吐量，包含流水线开销 |
-| it/s | 去噪速度，取各次运行的平均值 |
-| NPU | NPU 占用率，数据来自 Windows 性能计数器 |
-| CPU | 系统 CPU 占用率 |
+| it/s | 每秒步数，取所有运行、所有模型的平均值（参见[如何解读这些数据](#如何解读这些数据)） |
+| NPU | NPU 利用率，数据来自 Windows 性能计数器 |
+| CPU | 系统 CPU 利用率 |
+
+NPU 和 CPU 读数依赖 `C:\Windows\System32\AMD\xrt-smi.exe`（随 NPU 驱动一起安装）；显示 `—` 表示没有读数。
 
 > [!IMPORTANT]
-> 测试运行期间，请保持仪表盘所在的标签页处于**可见**状态。程序把页面每 2 秒一次的刷新当作心跳信号，而当标签页被隐藏或最小化时，浏览器会暂停这一刷新——心跳中断约 20 秒后，测试就会停止。点击 **Stop** 或关闭标签页同样会结束测试。
+> 测试运行期间，请保持仪表盘所在的标签页处于**可见**状态。程序把页面每 2 秒一次的刷新当作心跳信号，而当标签页被隐藏或最小化时，浏览器会暂停这一刷新。心跳中断约 20 秒后，或者点击 **Stop** 后，测试会在当前这张图片生成完毕后立即结束。
 
 ---
 
 ## 📊 性能报告
 
-任何时候都可以打开 **Performance Report → Generate Report**（性能报告 → 生成报告）。报告同时也会保存到 `endurance_results/report_<timestamp>.txt`。
+测试结束后，打开 **Performance Report → Generate Report**（性能报告 → 生成报告）。每次点击还会把报告保存到 `endurance_results/report_<timestamp>.txt`。
+
+> [!TIP]
+> 时长和吞吐量统计到你点击的那一刻为止，因此请在测试结束后立即生成报告。
 
 <details>
-<summary><b>报告示例</b>（点击展开）</summary>
+<summary><b>报告示例</b>（数据仅作示意——点击展开）</summary>
 
 ```text
 ============================================================
   NPU SD ENDURANCE TEST - PERFORMANCE REPORT
 ============================================================
   Generated   : 2026-06-03  20:45:12
-  Duration    : 01:00:00
+  Duration    : 01:00:32
   Mode        : Duration
   Status      : COMPLETE
-  Total runs  : 87  (OK: 87  FAIL: 0)
+  Total runs  : 94  (OK: 94  FAIL: 0)
   Success rate: 100.0%
 
+  SYSTEM
+  RAM                 : 31.1 GB  (avail 14.8 GB)
+  Tier                : FULL
+
   PER-MODEL RESULTS
-  ────────────────────────────────────────────────────────
-  Model             N   Avg(s)    Min    Max    Std   it/s  img/hr
-  SD 1.5           20    22.97  22.10  24.50   0.62  0.871   156.7
-  SD Turbo         20    19.72  18.90  21.30   0.58  0.051   182.5
-  SDXL Turbo       17    26.82  25.50  28.10   0.72  0.037   134.2
-  Segmind Vega     17    33.46  32.00  35.20   0.84  0.598   107.6
-  SDXL Base        13    93.19  91.00  96.50   1.43  0.537    38.6
+  ——————————————————————————————————————————————————————————
+  Model               N  Avg(s)    Min    Max    Std    it/s  img/hr
+  ——————————————————————————————————————————————————————————
+  SD 1.5             19   22.96  22.18  23.77   0.56   0.872   156.8
+  SD Turbo           19   19.74  18.99  20.47   0.54   0.051   182.4
+  SDXL Turbo         19   26.82  25.88  27.73   0.65   0.037   134.3
+  Segmind Vega       19   33.45  32.39  34.55   0.76   0.598   107.6
+  SDXL Base          18   93.14  91.34  95.05   1.29   0.537    38.7
+  ——————————————————————————————————————————————————————————
+  OVERALL            94   38.65  18.99  95.05  26.92   0.418    93.2
 
   STABILITY ANALYSIS
-  ────────────────────────────────────────────────────────
-  SD 1.5              : STABLE                trend +0.3%
-  SD Turbo            : STABLE                trend +1.1%
-  SDXL Turbo          : STABLE                trend -0.8%
-  Segmind Vega        : STABLE                trend +0.5%
-  SDXL Base           : STABLE                trend +1.2%
+  ——————————————————————————————————————————————————————————
+  SD 1.5              : STABLE                  trend +0.9%
+  SD Turbo            : STABLE                  trend -0.6%
+  SDXL Turbo          : STABLE                  trend +0.8%
+  Segmind Vega        : STABLE                  trend +0.8%
+  SDXL Base           : STABLE                  trend -0.1%
 
-  Overall throughput : 87.3 images/hr
+  Overall throughput : 93.2 images/hr
+
+============================================================
+  Design by Hiko
 ============================================================
 ```
 
 </details>
 
-**稳定性分析**会把每个模型前半段运行的平均耗时与后半段进行对比。如果趋势值（trend）超过 **+5 %**，说明该模型正在变慢——可能是过热降频或内存压力所致。
+**稳定性分析**会把每个模型前半段运行的平均耗时与后半段进行对比（每个模型至少需要 4 次运行）。如果趋势值（trend）超过 **+5 %**，说明该模型正在变慢——可能是过热降频或内存压力所致。
 
 ### 如何解读这些数据
 
-- **it/s**——每个去噪步骤在 NPU 上的运行速度。
-- **img/hr**——实际吞吐量，包含 CLIP 文本编码、VAE 解码以及进程启动的耗时。对于真实的工作负载，**真正重要的是 img/hr**。
-- SD Turbo 和 SDXL Turbo 只需一步，所以它们的 it/s 看起来非常小——这时应该看总延迟。
+- **Avg(s)**——生成一张图片的完整耗时，包括进程启动、模型加载、文本编码、去噪以及 VAE 解码。
+- **img/hr**——根据上述完整耗时得出的实际吞吐量。对真实工作负载而言，**img/hr 才是关键**。
+- **it/s**——去噪步数除以单张图片的完整耗时（如果 SD 脚本报告了 UNet 步骤耗时，则除以该耗时）。由于其中计入了启动和加载时间，SD Turbo 和 SDXL Turbo 这类只需一步的模型显示的 it/s 极小；对它们应改为比较延迟。
+
+### 输出文件
+
+```text
+endurance_results/
+├── images/               # 每一张生成的图片
+├── report_*.txt          # 每次点击 Generate Report 时写入
+├── checkpoint_*.json     # 大约每 30 分钟写入一次，测试结束时也会写入
+└── chart_*.png           # 性能图表，测试结束时生成（需要 matplotlib）
+```
 
 ---
 
@@ -204,19 +231,24 @@ set "DD_ROOT=D:\RyzenAI\1.7.1\GenAI-SD"
 <details>
 <summary><b>“No models found in models/ folder”</b></summary>
 
-文件夹名称必须完全一致（区分大小写）：`sd_15` `sd_turbo_bfp` `sdxl_turbo_bfp` `Segmind-Vega_bfp` `sdxl-base-1.0_bfp`
+文件夹名的拼写必须与下列名称完全一致：`sd_15` `sd_turbo_bfp` `sdxl_turbo_bfp` `Segmind-Vega_bfp` `sdxl-base-1.0_bfp`
+
+如果选择了 **Lite** 档位，但你只有 Full 档位的模型（SDXL Turbo、Segmind Vega、SDXL Base），也会出现这条提示——请把档位切换为 **Full**。
 </details>
 
 <details>
-<summary><b>运行日志中出现 “FAIL exit=1”</b></summary>
+<summary><b>运行日志中出现“FAIL exit=…”</b></summary>
 
-说明找不到或无法启动 SD 脚本。请确认：已安装 RyzenAI 1.7.1；已激活 RyzenAI 的 conda 环境；如果使用的是非默认安装路径，`DD_ROOT` 已指向 `GenAI-SD` 文件夹（参见 [RyzenAI 安装路径](#ryzenai-安装路径)）。
+- **exit=2**——找不到 SD 脚本。请检查 [RyzenAI 安装路径](#ryzenai-安装路径)。
+- **exit=1**——SD 脚本已启动但随后崩溃：通常是因为没有在 RyzenAI 的 conda 环境中启动程序（SD 脚本使用同一个 Python 运行），或者某个模型文件夹不完整。
+
+运行日志中不会显示脚本自身的错误输出。如需查看，请在同一个 conda 环境中，从 `<install root>\GenAI-SD\test` 手动运行该模型对应的 SD 脚本。
 </details>
 
 <details>
 <summary><b>生成速度很慢</b></summary>
 
-检查是否启用了 VitisAI EP：运行日志中应显示 `unet(NPU)`。如果没有，模型可能回退到了 CPU 上运行——请检查上文的安装路径。
+生成图片时，留意仪表盘上的 **NPU** 读数——如果它一直接近于零，模型很可能是在 CPU 上运行。请检查 [RyzenAI 安装路径](#ryzenai-安装路径)，并确认已激活 RyzenAI 的 conda 环境。
 </details>
 
 <details>
@@ -241,7 +273,7 @@ set "DD_ROOT=D:\RyzenAI\1.7.1\GenAI-SD"
 
 ## 🤝 参与贡献
 
-来自不同机器的测试结果是最有价值的贡献。跑过基准测试了吗？快来 **[分享你的报告](https://github.com/npugenai/npu-benchmark/issues/new?template=benchmark-result.yml)** 吧——每多一台新设备，都是对社区的帮助。同样欢迎提交 Bug 报告和 Pull Request。
+来自不同机器的测试结果是最有价值的贡献。跑过基准测试了吗？快来 **[分享你的报告](https://github.com/npugenai/npu-benchmark/issues/new?template=benchmark-result.yml)** 吧——每一台新设备的数据都能帮到社区。同样欢迎提交 Bug 报告和 Pull Request。
 
 ## 📄 许可证
 
@@ -255,8 +287,8 @@ set "DD_ROOT=D:\RyzenAI\1.7.1\GenAI-SD"
 
 <div align="center">
 
-**如果这个项目对你有帮助，请点个 ⭐ 支持一下——这真的很有帮助！**
+**如果这个项目对你有用，请点个 ⭐ 支持一下——这对项目帮助很大！**
 
-<sub>由 <a href="https://github.com/hiko1999GenAI">hiko1999</a> 用 💜 打造 · <a href="https://github.com/npugenai">NPU GenAI</a> 项目的一部分</sub>
+<sub>由 <a href="https://github.com/hiko1999GenAI">hiko1999</a> 用 💜 打造 · 隶属于 <a href="https://github.com/npugenai">NPU GenAI</a></sub>
 
 </div>
