@@ -3,7 +3,7 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="assets/banner-light.svg">
-  <img alt="NPU Benchmark — Stable Diffusion endurance test on AMD Ryzen AI NPU" src="assets/banner-dark.svg" width="100%">
+  <img alt="NPU Benchmark — Stable Diffusion endurance test on AMD Ryzen AI NPU" src="assets/banner-light.svg" width="100%">
 </picture>
 
 <br/>
@@ -143,8 +143,8 @@ set "DD_ROOT=D:\RyzenAI\1.7.1\GenAI-SD"
 | NPU | NPU utilization from Windows performance counters |
 | CPU | System CPU utilization |
 
-> [!TIP]
-> Keep the dashboard tab open. Pressing **Stop** — or closing the tab — ends the test; the app notices a closed tab within about 20 seconds.
+> [!IMPORTANT]
+> Keep the dashboard tab **visible** while a test runs. The app uses the page's 2-second refresh as a heartbeat, and browsers pause it when the tab is hidden or minimized — after about 20 seconds without it, the test stops. Pressing **Stop** or closing the tab also ends the test.
 
 ---
 
