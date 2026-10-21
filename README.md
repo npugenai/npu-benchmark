@@ -36,7 +36,7 @@
 | ⏱️ **Endurance modes** | By duration (10 min → 24 h) or by rounds (10 → 1500) |
 | 📈 **Live dashboard** | Real-time image gallery + images, failures, img/hr, it/s, NPU %, CPU % |
 | 🌡️ **Stability analysis** | Compares early vs. late run times per model to spot throttling or memory pressure |
-| 📝 **Text report** | One click — saved automatically as `.txt` |
+| 📝 **Text report** | One click — written to `endurance_results/` as `.txt`, next to auto-saved checkpoints and a performance chart |
 | 🎨 **60 scene prompts** | Landscapes, cities, fantasy, sci-fi… fully editable |
 
 ---
@@ -108,17 +108,19 @@ npu-benchmark/
 
 ### RyzenAI install path
 
-The app finds RyzenAI through `RYZEN_AI_INSTALLATION_PATH` (set by the AMD installer) and falls back to `C:\Program Files\RyzenAI\1.7.1`. If yours lives elsewhere, point `DD_ROOT` at the `GenAI-SD` folder:
+The app locates the RyzenAI SD scripts and runtime through `RYZEN_AI_INSTALLATION_PATH`, which the AMD installer sets for you, and falls back to `C:\Program Files\RyzenAI\1.7.1`. If RyzenAI lives somewhere else and that variable is missing, set it to the install root before starting the app:
 
 ```powershell
 # PowerShell
-$env:DD_ROOT = "D:\RyzenAI\1.7.1\GenAI-SD"
+$env:RYZEN_AI_INSTALLATION_PATH = "D:\RyzenAI\1.7.1"
 ```
 
 ```bat
 :: Command Prompt (cmd.exe)
-set "DD_ROOT=D:\RyzenAI\1.7.1\GenAI-SD"
+set "RYZEN_AI_INSTALLATION_PATH=D:\RyzenAI\1.7.1"
 ```
+
+`DD_ROOT` is passed on to the SD scripts and defaults to `<install root>\GenAI-SD`; you normally don't need to set it.
 
 ---
 
@@ -128,9 +130,9 @@ set "DD_ROOT=D:\RyzenAI\1.7.1\GenAI-SD"
 |---------|---------|---------|
 | Mode | By Duration / By Rounds | By Duration |
 | Duration | 10 min · 30 min · 1 h · 2 h · 8 h · 12 h · 24 h · Custom | 1 hour |
-| Rounds | 10 · 100 · 500 · 1000 · 1500 · Custom | 100 |
+| Rounds | 10 · 100 · 500 · 1000 · 1500 · Custom — total images across all models | 100 |
 | Tier | Lite (SD 1.5 + SD Turbo) / Full (all 5 models) | Picked from your RAM (≥ 28 GB → Full) |
-| Seed | Random (stress testing) / Fixed (reproducible comparisons) | Random |
+| Seed | Random — a new seed for every image (1001, 1002, …, so runs are repeatable) / Fixed — the same seed for every image | Random |
 
 **Live metrics** (refreshed every 2 s):
 
@@ -139,63 +141,88 @@ set "DD_ROOT=D:\RyzenAI\1.7.1\GenAI-SD"
 | Images | Successful generations |
 | Failed | Failed or timed-out runs |
 | img/hr | Real-world throughput, including pipeline overhead |
-| it/s | Denoising speed, averaged across runs |
+| it/s | Steps per second, averaged over all runs and models (see [how to read the numbers](#how-to-read-the-numbers)) |
 | NPU | NPU utilization from Windows performance counters |
 | CPU | System CPU utilization |
 
+NPU and CPU readings need `C:\Windows\System32\AMD\xrt-smi.exe` (installed with the NPU driver); `—` means no reading.
+
 > [!IMPORTANT]
-> Keep the dashboard tab **visible** while a test runs. The app uses the page's 2-second refresh as a heartbeat, and browsers pause it when the tab is hidden or minimized — after about 20 seconds without it, the test stops. Pressing **Stop** or closing the tab also ends the test.
+> Keep the dashboard tab **visible** while a test runs. The app uses the page's 2-second refresh as a heartbeat, and browsers pause it when the tab is hidden or minimized. After about 20 seconds without it — or when you press **Stop** — the test ends as soon as the image being generated is finished.
 
 ---
 
 ## 📊 Performance Report
 
-Open **Performance Report → Generate Report** at any time. The report is also saved to `endurance_results/report_<timestamp>.txt`.
+When a test finishes, open **Performance Report → Generate Report**. Each click also saves the report to `endurance_results/report_<timestamp>.txt`.
+
+> [!TIP]
+> Duration and throughput are measured up to the moment you click, so generate the report right after the test ends.
 
 <details>
-<summary><b>Example report</b> (click to expand)</summary>
+<summary><b>Example report</b> (illustrative numbers — click to expand)</summary>
 
 ```text
 ============================================================
   NPU SD ENDURANCE TEST - PERFORMANCE REPORT
 ============================================================
   Generated   : 2026-06-03  20:45:12
-  Duration    : 01:00:00
+  Duration    : 01:00:32
   Mode        : Duration
   Status      : COMPLETE
-  Total runs  : 87  (OK: 87  FAIL: 0)
+  Total runs  : 94  (OK: 94  FAIL: 0)
   Success rate: 100.0%
 
+  SYSTEM
+  RAM                 : 31.1 GB  (avail 14.8 GB)
+  Tier                : FULL
+
   PER-MODEL RESULTS
-  ────────────────────────────────────────────────────────
-  Model             N   Avg(s)    Min    Max    Std   it/s  img/hr
-  SD 1.5           20    22.97  22.10  24.50   0.62  0.871   156.7
-  SD Turbo         20    19.72  18.90  21.30   0.58  0.051   182.5
-  SDXL Turbo       17    26.82  25.50  28.10   0.72  0.037   134.2
-  Segmind Vega     17    33.46  32.00  35.20   0.84  0.598   107.6
-  SDXL Base        13    93.19  91.00  96.50   1.43  0.537    38.6
+  ——————————————————————————————————————————————————————————
+  Model               N  Avg(s)    Min    Max    Std    it/s  img/hr
+  ——————————————————————————————————————————————————————————
+  SD 1.5             19   22.96  22.18  23.77   0.56   0.872   156.8
+  SD Turbo           19   19.74  18.99  20.47   0.54   0.051   182.4
+  SDXL Turbo         19   26.82  25.88  27.73   0.65   0.037   134.3
+  Segmind Vega       19   33.45  32.39  34.55   0.76   0.598   107.6
+  SDXL Base          18   93.14  91.34  95.05   1.29   0.537    38.7
+  ——————————————————————————————————————————————————————————
+  OVERALL            94   38.65  18.99  95.05  26.92   0.418    93.2
 
   STABILITY ANALYSIS
-  ────────────────────────────────────────────────────────
-  SD 1.5              : STABLE                trend +0.3%
-  SD Turbo            : STABLE                trend +1.1%
-  SDXL Turbo          : STABLE                trend -0.8%
-  Segmind Vega        : STABLE                trend +0.5%
-  SDXL Base           : STABLE                trend +1.2%
+  ——————————————————————————————————————————————————————————
+  SD 1.5              : STABLE                  trend +0.9%
+  SD Turbo            : STABLE                  trend -0.6%
+  SDXL Turbo          : STABLE                  trend +0.8%
+  Segmind Vega        : STABLE                  trend +0.8%
+  SDXL Base           : STABLE                  trend -0.1%
 
-  Overall throughput : 87.3 images/hr
+  Overall throughput : 93.2 images/hr
+
+============================================================
+  Design by Hiko
 ============================================================
 ```
 
 </details>
 
-**Stability analysis** compares the average time of the first half of each model's runs with the second half. A trend above **+5 %** means the model is slowing down — possibly thermal throttling or memory pressure.
+**Stability analysis** compares the average time of the first half of each model's runs with the second half (at least 4 runs per model). A trend above **+5 %** means the model is slowing down — possibly thermal throttling or memory pressure.
 
 ### How to read the numbers
 
-- **it/s** — how fast each denoising step runs on the NPU.
-- **img/hr** — practical throughput including CLIP text encoding, VAE decode and process start-up. For real workloads, **img/hr is what matters**.
-- SD Turbo and SDXL Turbo take a single step, so their it/s looks tiny — look at total latency instead.
+- **Avg(s)** — the full time for one image: process start-up, model loading, text encoding, denoising and VAE decode.
+- **img/hr** — practical throughput built from those full times. For real workloads, **img/hr is what matters**.
+- **it/s** — denoising steps divided by the full per-image time (or the UNet step time, when the SD script reports one). Because start-up and loading are included, SD Turbo and SDXL Turbo — which take a single step — show a tiny it/s; compare their latency instead.
+
+### Output files
+
+```text
+endurance_results/
+├── images/               # every generated image
+├── report_*.txt          # written each time you click Generate Report
+├── checkpoint_*.json     # about every 30 min and when a test ends
+└── chart_*.png           # performance chart, when a test ends (needs matplotlib)
+```
 
 ---
 
@@ -204,19 +231,24 @@ Open **Performance Report → Generate Report** at any time. The report is also 
 <details>
 <summary><b>“No models found in models/ folder”</b></summary>
 
-Folder names must match exactly (case-sensitive): `sd_15` `sd_turbo_bfp` `sdxl_turbo_bfp` `Segmind-Vega_bfp` `sdxl-base-1.0_bfp`
+Folder names must be spelled exactly: `sd_15` `sd_turbo_bfp` `sdxl_turbo_bfp` `Segmind-Vega_bfp` `sdxl-base-1.0_bfp`
+
+You will also see this message if the **Lite** tier is selected but you only have Full-tier models (SDXL Turbo, Segmind Vega, SDXL Base) — switch the tier to **Full**.
 </details>
 
 <details>
-<summary><b>“FAIL exit=1” in the run log</b></summary>
+<summary><b>“FAIL exit=…” in the run log</b></summary>
 
-The SD scripts could not be found or started. Make sure RyzenAI 1.7.1 is installed, the RyzenAI conda environment is active, and — for a non-default install path — `DD_ROOT` points at the `GenAI-SD` folder (see [RyzenAI install path](#ryzenai-install-path)).
+- **exit=2** — the SD script was not found. Check the [RyzenAI install path](#ryzenai-install-path).
+- **exit=1** — the SD script started but crashed: usually the app was started outside the RyzenAI conda environment (the SD scripts run with the same Python), or a model folder is incomplete.
+
+The script's own error output is not shown in the run log. To see it, run the SD script for that model by hand from `<install root>\GenAI-SD\test` in the same conda environment.
 </details>
 
 <details>
 <summary><b>Generation is slow</b></summary>
 
-Check that the VitisAI EP is used: the run log should show `unet(NPU)`. If not, the model may be falling back to CPU — check the install path above.
+Watch the **NPU** reading on the dashboard while an image is generated — if it stays near zero, the model is probably running on the CPU. Check the [RyzenAI install path](#ryzenai-install-path) and that the RyzenAI conda environment is active.
 </details>
 
 <details>
