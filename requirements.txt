@@ -1,0 +1,6 @@
+# Dashboard dependencies — install inside the RyzenAI conda environment.
+# The RyzenAI installer already provides onnxruntime / VitisAI EP and the SD runtime.
+gradio>=4.44,<6     # gr.Timer needs 4.40+; Blocks(css=...) is removed in Gradio 6
+psutil
+matplotlib
+pillow

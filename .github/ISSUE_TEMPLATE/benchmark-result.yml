@@ -1,0 +1,53 @@
+name: 📊 Share a benchmark result
+description: Post the report from your machine so others can compare NPUs.
+title: "[Result] <CPU model> — <models tested>"
+labels: ["benchmark-result"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for sharing! Every new device helps the community understand real NPU performance.
+  - type: input
+    id: cpu
+    attributes:
+      label: Processor
+      placeholder: e.g. AMD Ryzen AI 7 350
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Laptop / device model
+      placeholder: e.g. Brand Model 14 (2025)
+  - type: dropdown
+    id: ram
+    attributes:
+      label: RAM
+      options: ["16 GB", "24 GB", "32 GB", "64 GB", "Other"]
+    validations:
+      required: true
+  - type: input
+    id: software
+    attributes:
+      label: RyzenAI Software / NPU driver version
+      placeholder: e.g. RyzenAI 1.7.1, NPU driver 32.0.xxx
+    validations:
+      required: true
+  - type: dropdown
+    id: power
+    attributes:
+      label: Power mode
+      options: ["Plugged in — Best performance", "Plugged in — Balanced", "On battery", "Other"]
+  - type: textarea
+    id: report
+    attributes:
+      label: Performance report
+      description: Paste the full text from "Generate Report" (or attach the report_*.txt file).
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Cooling, ambient temperature, anything unusual.
