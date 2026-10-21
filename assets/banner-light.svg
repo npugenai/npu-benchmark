@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320" role="img" aria-labelledby="t d">
+  <title id="t">NPU Benchmark</title>
+  <desc id="d">Stable Diffusion endurance test on AMD Ryzen AI NPU. XDNA2, RyzenAI 1.7.1, VitisAI EP, 5 SD models. Artwork: a pixel latent denoising from random noise into a moonlit landscape.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fcfbff"/>
+      <stop offset="1" stop-color="#efe9fb"/>
+    </linearGradient>
+    <clipPath id="card"><rect width="1280" height="320" rx="24"/></clipPath>
+
+    <!-- target image -->
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="230" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#e3d8fa"/>
+      <stop offset="1" stop-color="#b7a1ea"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="1088" cy="100" r="212" gradientUnits="userSpaceOnUse">
+      <stop offset="0.20" stop-color="#ffffff" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="moon" cx=".4" cy=".35" r=".75">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#f1ebff"/>
+    </radialGradient>
+    <linearGradient id="far" x1="0" y1="150" x2="0" y2="320" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#b3a0e3"/><stop offset="1" stop-color="#a691dc"/>
+    </linearGradient>
+    <linearGradient id="mid" x1="0" y1="200" x2="0" y2="320" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#937dd0"/><stop offset="1" stop-color="#8670c4"/>
+    </linearGradient>
+    <linearGradient id="near" x1="0" y1="260" x2="0" y2="320" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7660b0"/><stop offset="1" stop-color="#6551a0"/>
+    </linearGradient>
+    <linearGradient id="mist" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset=".5" stop-color="#ffffff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <!-- the image resolves from left to right -->
+    <linearGradient id="reveal" x1="900" y1="0" x2="1090" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="1" stop-color="#fff"/>
+    </linearGradient>
+    <style>
+      .tw1 { animation: tw1 4.6s ease-in-out infinite }
+      .tw2 { animation: tw2 6.8s ease-in-out infinite }
+      .pulse { animation: pulse 9s ease-in-out infinite }
+      @keyframes tw1 { 50% { opacity: .35 } }
+      @keyframes tw2 { 50% { opacity: .45 } }
+      @keyframes pulse { 50% { opacity: .7 } }
+      @media (prefers-reduced-motion: reduce) { .tw1, .tw2, .pulse { animation: none } }
+    </style>
+    <mask id="resolve"><rect width="1280" height="320" fill="url(#reveal)"/></mask>
+    <linearGradient id="npu" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7b5cc9"/>
+      <stop offset="1" stop-color="#a18cd1"/>
+    </linearGradient>
+  </defs>
+
+  <g clip-path="url(#card)">
+    <rect width="1280" height="320" fill="url(#bg)"/>
+
+    <!-- clean image (t = 0) -->
+    <g mask="url(#resolve)">
+      <rect x="640" width="640" height="320" fill="url(#sky)"/>
+      <rect class="pulse" x="640" width="640" height="320" fill="url(#glow)"/>
+      <circle cx="1088" cy="100" r="42" fill="url(#moon)"/>
+      <path fill="url(#far)" d="M660 330V214C667 214 687 214 700 213C713 213 727 212 740 210C753 209 767 206 780 203C793 200 807 195 820 192C833 189 847 185 860 183C873 180 887 180 900 177C913 174 927 171 940 167C953 163 967 157 980 154C993 152 1007 150 1020 152C1033 154 1047 161 1060 166C1073 171 1087 180 1100 183C1113 187 1127 188 1140 186C1153 185 1167 178 1180 175C1193 172 1207 169 1220 170C1233 171 1247 177 1260 182C1273 187 1293 197 1300 200V330Z"/>
+      <rect x="640" y="186" width="640" height="56" fill="url(#mist)"/>
+      <path fill="url(#mid)" d="M660 330V252C667 252 687 252 700 252C713 252 727 251 740 251C753 250 767 250 780 248C793 247 807 245 820 242C833 240 847 237 860 234C873 231 887 228 900 226C913 225 927 224 940 223C953 223 967 224 980 224C993 224 1007 224 1020 223C1033 222 1047 220 1060 219C1073 217 1087 214 1100 213C1113 212 1127 211 1140 212C1153 213 1167 215 1180 218C1193 220 1207 224 1220 227C1233 229 1247 230 1260 232C1273 234 1293 236 1300 237V330Z"/>
+      <path fill="url(#near)" d="M660 330V290C667 290 687 290 700 290C713 290 727 290 740 289C753 289 767 289 780 288C793 288 807 287 820 286C833 285 847 284 860 282C873 281 887 279 900 277C913 276 927 274 940 272C953 270 967 269 980 268C993 267 1007 266 1020 266C1033 266 1047 267 1060 267C1073 268 1087 270 1100 271C1113 272 1127 274 1140 274C1153 275 1167 275 1180 275C1193 275 1207 273 1220 273C1233 273 1247 273 1260 274C1273 275 1293 278 1300 279V330Z"/>
+    </g>
+
+    <!-- noisy latent (t = T ... 0): 12px pixels on a 16px grid -->
+    <g fill="none" stroke-width="12">
+      <path stroke="#735dad" stroke-opacity="0.95" d="M788 296h12m68 0h12m4 -16h12m-12 16h12m-12 16h12m4 -32h12m-12 16h12m4 -16h12m-12 32h12m4 -32h12m-12 16h12m4 -16h12m-12 16h12m4 -16h12m-12 16h12m-12 16h12m4 -32h12m-12 16h12m-12 16h12m4 -32h12m-12 16h12m-12 16h12m4 -32h12m-12 16h12m-12 16h12m4 -32h12m-12 16h12m-12 16h12m4 -32h12m-12 16h12m-12 16h12m4 -32h12m4 0h12m-12 32h12"/>
+      <path stroke="#8a73b8" stroke-opacity="0.55" d="M948 40h12"/>
+      <path stroke="#8d77cb" stroke-opacity="0.95" d="M836 280h12m4 -32h12m-12 32h12m4 -32h12m-12 16h12m4 -32h12m4 0h12m-12 16h12m-12 16h12m4 -32h12m-12 16h12m-12 16h12m4 -32h12m-12 16h12m-12 16h12m4 -32h12m4 0h12m-12 16h12m-12 16h12m4 -32h12m-12 16h12m-12 16h12m4 -32h12m-12 16h12m-12 16h12m4 -32h12m-12 16h12m-12 16h12m4 -32h12m-12 16h12m-12 16h12m4 -32h12m4 0h12m4 0h12"/>
+      <path stroke="#9eaac8" stroke-opacity="0.85" d="M996 8h12"/>
+      <path stroke="#af9be1" stroke-opacity="0.95" d="M948 216h12m4 0h12m4 0h12m4 0h12m4 0h12m4 0h12"/>
+      <path stroke="#b5a2e6" stroke-opacity="0.3" d="M948 312h12"/>
+      <path stroke="#c0aced" stroke-opacity="0.95" d="M804 184h12m-12 16h12m4 -80h12m4 64h12m-12 16h12m4 -48h12m-12 16h12m-12 32h12m-12 16h12m4 -96h12m-12 16h12m-12 64h12m4 -64h12m-12 32h12m-12 16h12m-12 16h12m-12 16h12m4 -96h12m-12 16h12m-12 16h12m-12 48h12m4 -64h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m4 -48h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m4 -80h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m4 -48h12m-12 16h12m-12 16h12m-12 16h12m4 -32h12m-12 16h12m-12 16h12m4 -48h12m-12 16h12m-12 16h12m-12 16h12m4 -48h12m-12 16h12m-12 16h12m-12 16h12m4 -32h12m-12 16h12m-12 16h12m4 -32h12m-12 16h12m4 32h12"/>
+      <path stroke="#d6caf3" stroke-opacity="0.3" d="M948 264h12m20 -112h12"/>
+      <path stroke="#ded2f8" stroke-opacity="0.95" d="M772 24h12m20 -16h12m-12 32h12m4 -16h12m-12 48h12m4 -64h12m4 0h12m-12 16h12m-12 32h12m-12 48h12m4 -80h12m-12 48h12m-12 32h12m4 -96h12m-12 48h12m-12 16h12m4 -48h12m-12 32h12m-12 16h12m-12 32h12m4 -96h12m-12 48h12m-12 16h12m-12 16h12m-12 16h12m4 -96h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m4 -80h12m-12 16h12m-12 32h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m4 -112h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m4 -128h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m4 -112h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m4 -128h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m4 -128h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m-12 16h12m4 -128h12m-12 112h12m-12 16h12m4 -128h12m-12 16h12m4 112h12"/>
+      <path stroke="#f1ebff" stroke-opacity="0.95" d="M1044 104h12m4 16h12"/>
+      <g class="tw1">
+        <path stroke="#6b5b95" stroke-opacity="0.55" d="M756 40h12m20 112h12m20 48h12m-12 48h12m20 -160h12m52 128h12m-12 80h12"/>
+        <path stroke="#6b5b95" stroke-opacity="0.85" d="M772 312h12m36 -272h12m20 32h12"/>
+        <path stroke="#8a73b8" stroke-opacity="0.3" d="M916 24h12"/>
+        <path stroke="#8a73b8" stroke-opacity="0.55" d="M804 152h12m4 -144h12m4 96h12m20 48h12m4 -48h12m-12 48h12"/>
+        <path stroke="#8a73b8" stroke-opacity="0.85" d="M788 232h12m4 -96h12"/>
+        <path stroke="#9eaac8" stroke-opacity="0.85" d="M820 88h12m52 160h12"/>
+        <path stroke="#b5a2e6" stroke-opacity="0.3" d="M772 88h12m-12 16h12m52 32h12m-12 176h12m36 -288h12"/>
+        <path stroke="#b5a2e6" stroke-opacity="0.55" d="M708 168h12m4 -32h12m4 48h12m68 -80h12m36 80h12"/>
+      </g>
+      <g class="tw2">
+        <path stroke="#6b5b95" stroke-opacity="0.3" d="M804 264h12"/>
+        <path stroke="#6b5b95" stroke-opacity="0.55" d="M740 296h12m36 -96h12m132 -64h12"/>
+        <path stroke="#6b5b95" stroke-opacity="0.85" d="M836 296h12m36 -32h12m4 48h12"/>
+        <path stroke="#8a73b8" stroke-opacity="0.3" d="M788 24h12m-12 96h12m4 -96h12m-12 64h12m4 144h12m4 -208h12m-12 96h12m4 -80h12m36 -32h12m-12 176h12"/>
+        <path stroke="#8a73b8" stroke-opacity="0.55" d="M740 280h12m132 -192h12m20 -48h12m-12 80h12m4 192h12"/>
+        <path stroke="#8a73b8" stroke-opacity="0.85" d="M772 72h12m-12 48h12m36 176h12m68 -208h12m20 16h12"/>
+        <path stroke="#9eaac8" stroke-opacity="0.55" d="M836 232h12"/>
+        <path stroke="#9eaac8" stroke-opacity="0.85" d="M708 312h12m68 -64h12m68 -240h12m-12 272h12"/>
+        <path stroke="#b5a2e6" stroke-opacity="0.3" d="M740 168h12m20 64h12m4 -128h12m-12 160h12m20 -48h12m20 -80h12m-12 48h12m4 -128h12m-12 32h12"/>
+        <path stroke="#b5a2e6" stroke-opacity="0.55" d="M804 280h12m20 -224h12m20 -16h12m52 80h12"/>
+        <path stroke="#b5a2e6" stroke-opacity="0.85" d="M852 120h12"/>
+        <path stroke="#d6caf3" stroke-opacity="0.3" d="M868 216h12"/>
+      </g>
+    </g>
+  </g>
+  <rect x=".5" y=".5" width="1279" height="319" rx="23.5" fill="none" stroke="#8a73b8" stroke-opacity="0.22"/>
+
+  <!-- wordmark -->
+  <g font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="18" font-weight="600" letter-spacing="3" fill="#7a62b8">
+    <path fill="#7a62b8" d="M64 62h7v7h-7zM73 62h7v7h-7zM64 71h7v7h-7z"/>
+    <path fill="#7a62b8" fill-opacity=".45" d="M73 71h7v7h-7z"/>
+    <text x="92" y="77">NPU GENAI</text>
+  </g>
+  <text x="62" y="148" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="72" font-weight="700" letter-spacing="-1.5" fill="#221c38"><tspan fill="url(#npu)">NPU</tspan> Benchmark</text>
+  <text x="64" y="190" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="22" fill="#5f5a78">Stable Diffusion endurance test on AMD Ryzen AI NPU</text>
+
+  <g font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="18" font-weight="500" text-anchor="middle">
+    <g fill="#ffffff" fill-opacity="0.75" stroke="#8a73b8" stroke-opacity="0.35">
+      <rect x="64.5" y="219.5" width="82" height="36" rx="18"/>
+      <rect x="156.5" y="219.5" width="168" height="36" rx="18"/>
+      <rect x="334.5" y="219.5" width="136" height="36" rx="18"/>
+      <rect x="480.5" y="219.5" width="147" height="36" rx="18"/>
+    </g>
+    <g fill="#5a4892">
+      <text x="105.5" y="243.5">XDNA2</text>
+      <text x="240.5" y="243.5">RyzenAI 1.7.1</text>
+      <text x="402.5" y="243.5">VitisAI EP</text>
+      <text x="554" y="243.5">5 SD models</text>
+    </g>
+  </g>
+</svg>
