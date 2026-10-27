@@ -1,93 +1,103 @@
-# NPU BenchMark for AMD
+<div align="center">
 
-> A browser-based Stable Diffusion stress test and benchmark tool for AMD Ryzen AI NPU (XDNA2).  
-> Real NPU-accelerated image generation benchmark — not CPU, not GPU.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="assets/banner-light.svg">
+  <img alt="NPU Benchmark — Stable Diffusion endurance test on AMD Ryzen AI NPU" src="assets/banner-light.svg" width="100%">
+</picture>
 
-**Design by hiko1999genai**
->
-If you find this project helpful, please consider giving it a ⭐️ and following me for more updates!
+<br/>
 
----
+[![AMD Ryzen AI](https://img.shields.io/badge/AMD_Ryzen_AI-XDNA2_NPU-a18cd1?style=for-the-badge&logo=amd&logoColor=white)](https://www.amd.com/en/products/processors/consumer/ryzen-ai.html)
+[![RyzenAI Software](https://img.shields.io/badge/RyzenAI_SW-1.7.1-8a73b8?style=for-the-badge)](https://ryzenai.docs.amd.com/en/latest/)
+[![Windows 11](https://img.shields.io/badge/Windows-11-6f5fa8?style=for-the-badge&logo=windows11&logoColor=white)](#-requirements)
+[![License: MIT](https://img.shields.io/badge/License-MIT-d1c4e9?style=for-the-badge)](LICENSE)
 
-## What This Is
+**English** · [简体中文](README.zh-CN.md) · [日本語](README.ja.md)
 
-This tool runs Stable Diffusion **natively on the AMD Ryzen AI NPU** via the VitisAI execution provider, measuring real inference throughput, stability, and performance over time.
+**A browser-based Stable Diffusion stress test that runs _natively on the AMD Ryzen AI NPU_ —<br/>not CPU, not GPU — and tells you how fast and how stable it stays over hours.**
 
-**Tested on:**
-- AMD CPU with XDNA2 NPU (Krackan Point is for sure, XDNA2, 50 TOPS)
-- RyzenAI Software 1.7.1 & Please support AMD Ryzen AI. AMD has many great models on Hugging Face.
-- Windows 11
+</div>
 
----
-
-## Features
-
-The models used can be downloaded from here: https://huggingface.co/collections/amd/ryzen-ai-171-sd-models
-
-- **5 SD models** — SD 1.5, SD Turbo, SDXL Turbo, Segmind Vega, SDXL Base
-- **2 test modes** — By Duration (10 min → 24 hr) or By Rounds (10 → 1500)
-- **60 diverse scene prompts** — covers landscapes, cityscapes, fantasy, sci-fi, and more
-- **Live browser dashboard** — real-time image gallery + metrics sidebar
-- **Metrics** — Images generated, failures, img/hr, it/s, CPU%
-- **Performance report** — plain-text monospace output, auto-saved as `.txt`
-- **Stability analysis** — detects thermal throttling trends per model
-- **Auto browser launch** — opens `http://127.0.0.1:7862` on start
-- **Heartbeat detection** — closing the browser tab stops the test
+<!-- Screenshot slot: drop a real screenshot of a running test at assets/dashboard.png, then remove these comment markers.
+<p align="center">
+  <img src="assets/dashboard.png" alt="NPU Benchmark dashboard during a run" width="92%">
+</p>
+-->
 
 ---
 
-## Prerequisites
+## ✨ Highlights
 
-### 1. Hardware
+| | |
+|---|---|
+| 🧠 **Real NPU inference** | Stable Diffusion runs on the XDNA2 NPU through the VitisAI execution provider |
+| 🖼️ **5 SD models** | SD 1.5 · SD Turbo · SDXL Turbo · Segmind Vega · SDXL Base |
+| ⏱️ **Endurance modes** | By duration (10 min → 24 h) or by rounds (10 → 1500) |
+| 📈 **Live dashboard** | Real-time image gallery + images, failures, img/hr, it/s, NPU %, CPU % |
+| 🌡️ **Stability analysis** | Compares early vs. late run times per model to spot throttling or memory pressure |
+| 📝 **Text report** | One click — written to `endurance_results/` as `.txt`, next to auto-saved checkpoints and a performance chart |
+| 🎨 **60 scene prompts** | Landscapes, cities, fantasy, sci-fi… fully editable |
 
-- AMD Ryzen AI processor with **XDNA2 NPU**
+---
 
-- Minimum 16 GB RAM (32 GB recommended for Full tier with all 5 models)
+## 🚀 Quick Start
 
-### 2. AMD RyzenAI Software 1.7.1
+```powershell
+# 1. Get the code
+git clone https://github.com/npugenai/npu-benchmark.git
+cd npu-benchmark
 
-Download and install from the AMD developer portal.
+# 2. Activate the conda environment created by the RyzenAI installer
+conda activate <your-ryzenai-env>        # e.g. ryzen-ai-1.7.1
 
-The installer sets up the conda environment (`xdna171`) and all required DLLs automatically.
+# 3. Install the dashboard dependencies
+pip install -r requirements.txt
 
-> **Note:** RyzenAI 1.7.1 is required. Earlier versions (1.6, 1.5) use different model formats and are not compatible.
+# 4. Put your model folders into ./models  (see below), then run
+python npu_sd_endurance_gradio.py
+```
 
-### 3. SD Models (ONNX format for NPU)
+Your browser opens **http://127.0.0.1:7862** automatically. Pick a mode, press **▶ Start Benchmark**, and watch the NPU work.
 
-You need AMD-optimized ONNX model folders. These are separate from standard HuggingFace checkpoints.
+---
+
+## 📋 Requirements
+
+| | |
+|---|---|
+| **Hardware** | AMD Ryzen AI processor with an **XDNA2** NPU · 16 GB RAM minimum (32 GB for all 5 models) |
+| **OS** | Windows 11 |
+| **Software** | [AMD RyzenAI Software **1.7.1**](https://ryzenai.docs.amd.com/en/latest/inst.html) (earlier versions use different model formats) |
+| **Models** | AMD-optimized ONNX Stable Diffusion models — [Hugging Face collection](https://huggingface.co/collections/amd/ryzen-ai-171-sd-models) |
+
+Check that the NPU is visible:
+
+```powershell
+C:\Windows\System32\AMD\xrt-smi.exe examine
+```
+
+```text
+|BDF             |Name         |
+|----------------|-------------|
+|[00c4:00:01.1]  |NPU Krackan  |
+```
+
+### Models
+
+Create a `models/` folder next to the script and put each model folder inside. You don't need all five — the app detects whatever is present.
 
 | Model | Folder name | Resolution | Steps | Tier |
-|-------|-------------|------------|-------|------|
+|-------|-------------|------------|------:|------|
 | SD 1.5 | `sd_15` | 512×512 | 20 | Lite |
 | SD Turbo | `sd_turbo_bfp` | 512×512 | 1 | Lite |
 | SDXL Turbo | `sdxl_turbo_bfp` | 512×512 | 1 | Full |
 | Segmind Vega | `Segmind-Vega_bfp` | 1024×1024 | 20 | Full |
 | SDXL Base | `sdxl-base-1.0_bfp` | 1024×1024 | 50 | Full |
 
-Model download links and instructions are available in the official AMD RyzenAI SD guide:
-```
-https://ryzenai.docs.amd.com/en/latest/sd_model_zoo.html
-```
-
----
-
-## Installation
-
-### Step 1 — Clone the repository
-
-```bash
-git clone https://github.com/YOUR_USERNAME/npu-benchmark-amd.git
-cd npu-benchmark-amd
-```
-
-### Step 2 — Place your models
-
-Create a `models/` folder inside the project and put each model folder inside it:
-
-```
-npu-benchmark-amd/
+```text
+npu-benchmark/
 ├── npu_sd_endurance_gradio.py
-├── README.md
 └── models/
     ├── sd_15/
     ├── sd_turbo_bfp/
@@ -96,111 +106,71 @@ npu-benchmark-amd/
     └── sdxl-base-1.0_bfp/
 ```
 
-You don't need all 5 models. The app auto-detects which folders are present.
+### RyzenAI install path
 
-### Step 3 — Verify your RyzenAI install
-
-Open a terminal and check:
+The app locates the RyzenAI SD scripts and runtime through `RYZEN_AI_INSTALLATION_PATH`, which the AMD installer sets for you, and falls back to `C:\Program Files\RyzenAI\1.7.1`. If RyzenAI lives somewhere else and that variable is missing, set it to the install root before starting the app:
 
 ```powershell
-conda activate xdna171
-python -c "import onnxruntime; print(onnxruntime.__version__)"
-C:\Windows\System32\AMD\xrt-smi.exe examine
+# PowerShell
+$env:RYZEN_AI_INSTALLATION_PATH = "D:\RyzenAI\1.7.1"
 ```
 
-You should see your NPU listed under **Device(s) Present**, e.g.:
+```bat
+:: Command Prompt (cmd.exe)
+set "RYZEN_AI_INSTALLATION_PATH=D:\RyzenAI\1.7.1"
 ```
-|BDF             |Name         |
-|----------------|-------------|
-|[00c4:00:01.1]  |NPU Krackan  |
-```
+
+`DD_ROOT` is passed on to the SD scripts and defaults to `<install root>\GenAI-SD`; you normally don't need to set it.
 
 ---
 
-## Running the Benchmark
-
-### Quick start
-
-```powershell
-conda activate xdna171
-set DD_ROOT=C:\Program Files\RyzenAI\1.7.1\GenAI-SD
-cd C:\path\to\npu-benchmark-amd
-python npu_sd_endurance_gradio.py
-```
-
-A browser window opens automatically at `http://127.0.0.1:7862`.
-
-### If your RyzenAI is installed to a different path
-
-```powershell
-set DD_ROOT=D:\RyzenAI\1.7.1\GenAI-SD
-```
-
-### Running in the background (PowerShell)
-
-```powershell
-Start-Process python -ArgumentList "npu_sd_endurance_gradio.py" -WindowStyle Minimized
-```
-
----
-
-## Using the Dashboard
-
-### Left panel — Settings
+## 🖥️ Using the Dashboard
 
 | Setting | Options | Default |
 |---------|---------|---------|
 | Mode | By Duration / By Rounds | By Duration |
-| Duration | 10 min / 30 min / 1 hr / 2 hr / 8 hr / 12 hr / 24 hr / Custom | 1 hour |
-| Rounds | 10 / 100 / 500 / 1000 / 1500 / Custom | 100 rounds |
-| Tier | Lite (SD 1.5 + SD Turbo) / Full (all 5 models) | Auto-detected by RAM |
-| Seed | Random / Fixed | Random |
+| Duration | 10 min · 30 min · 1 h · 2 h · 8 h · 12 h · 24 h · Custom | 1 hour |
+| Rounds | 10 · 100 · 500 · 1000 · 1500 · Custom — total images across all models | 100 |
+| Tier | Lite (SD 1.5 + SD Turbo) / Full (all 5 models) | Picked from your RAM (≥ 28 GB → Full) |
+| Seed | Random — a new seed for every image (1001, 1002, …, so runs are repeatable) / Fixed — the same seed for every image | Random |
 
-**System Info** shows your RAM and auto-recommends a tier based on available memory:
-- ≥ 28 GB → Full tier (all 5 models)
-- < 28 GB → Lite tier (SD 1.5 and SD Turbo only)
+**Live metrics** (refreshed every 2 s):
 
-**Scene Prompts** are collapsed by default. Click to expand and edit — one prompt per line, English only, max 77 tokens per line. A token counter validates your prompts in real time.
+| Metric | Meaning |
+|--------|---------|
+| Images | Successful generations |
+| Failed | Failed or timed-out runs |
+| img/hr | Real-world throughput, including pipeline overhead |
+| it/s | Steps per second, averaged over all runs and models (see [how to read the numbers](#how-to-read-the-numbers)) |
+| NPU | NPU utilization from Windows performance counters |
+| CPU | System CPU utilization |
 
-**Seed** controls the noise pattern:
-- **Random** — different image every run (best for endurance/stress testing)
-- **Fixed** — same noise pattern every run (best for reproducibility comparisons)
+NPU and CPU readings need `C:\Windows\System32\AMD\xrt-smi.exe` (installed with the NPU driver); `—` means no reading.
 
-### Right panel — Live Gallery + Metrics
-
-The gallery shows generated images in real time. The metrics sidebar updates every 2 seconds:
-
-| Metric | Description |
-|--------|-------------|
-| Images | Total successful generations |
-| Failed | Count of failed or timed-out runs |
-| img/hr | Practical throughput (images per hour) |
-| it/s | Inference speed (iterations per second, averaged across all runs) |
-| CPU% | System CPU utilization (polled via psutil) |
-
-A dark placeholder tile with a spinning circle means a generation is in progress.
-
-### Stopping the test
-
-Click **Stop** in the dashboard, or simply **close the browser tab** — the app detects the disconnection via heartbeat and stops automatically within ~20 seconds.
+> [!IMPORTANT]
+> Keep the dashboard tab **visible** while a test runs. The app uses the page's 2-second refresh as a heartbeat, and browsers pause it when the tab is hidden or minimized. After about 20 seconds without it — or when you press **Stop** — the test ends as soon as the image being generated is finished.
 
 ---
 
-## Performance Report
+## 📊 Performance Report
 
-After the test finishes (or at any point), expand the **Performance Report** section and click **Generate Report**.
+When a test finishes, open **Performance Report → Generate Report**. Each click also saves the report to `endurance_results/report_<timestamp>.txt`.
 
-Example output:
+> [!TIP]
+> Duration and throughput are measured up to the moment you click, so generate the report right after the test ends.
 
-```
+<details>
+<summary><b>Example report</b> (illustrative numbers — click to expand)</summary>
+
+```text
 ============================================================
   NPU SD ENDURANCE TEST - PERFORMANCE REPORT
 ============================================================
   Generated   : 2026-06-03  20:45:12
-  Duration    : 01:00:00
+  Duration    : 01:00:32
   Mode        : Duration
   Status      : COMPLETE
-  Total runs  : 87  (OK: 87  FAIL: 0)
+  Total runs  : 94  (OK: 94  FAIL: 0)
   Success rate: 100.0%
 
   SYSTEM
@@ -208,137 +178,117 @@ Example output:
   Tier                : FULL
 
   PER-MODEL RESULTS
-  ────────────────────────────────────────────────────────
-  Model             N   Avg(s)    Min    Max    Std   it/s  img/hr
-  SD 1.5           20    22.97  22.10  24.50   0.62  0.871   156.7
-  SD Turbo         20    19.72  18.90  21.30   0.58  0.051   182.5
-  SDXL Turbo       17    26.82  25.50  28.10   0.72  0.037   134.2
-  Segmind Vega     17    33.46  32.00  35.20   0.84  0.598   107.6
-  SDXL Base        13    93.19  91.00  96.50   1.43  0.537    38.6
-  ────────────────────────────────────────────────────────
+  ——————————————————————————————————————————————————————————
+  Model               N  Avg(s)    Min    Max    Std    it/s  img/hr
+  ——————————————————————————————————————————————————————————
+  SD 1.5             19   22.96  22.18  23.77   0.56   0.872   156.8
+  SD Turbo           19   19.74  18.99  20.47   0.54   0.051   182.4
+  SDXL Turbo         19   26.82  25.88  27.73   0.65   0.037   134.3
+  Segmind Vega       19   33.45  32.39  34.55   0.76   0.598   107.6
+  SDXL Base          18   93.14  91.34  95.05   1.29   0.537    38.7
+  ——————————————————————————————————————————————————————————
+  OVERALL            94   38.65  18.99  95.05  26.92   0.418    93.2
 
   STABILITY ANALYSIS
-  ────────────────────────────────────────────────────────
-  SD 1.5              : STABLE                trend +0.3%
-  SD Turbo            : STABLE                trend +1.1%
-  SDXL Turbo          : STABLE                trend -0.8%
-  Segmind Vega        : STABLE                trend +0.5%
-  SDXL Base           : STABLE                trend +1.2%
+  ——————————————————————————————————————————————————————————
+  SD 1.5              : STABLE                  trend +0.9%
+  SD Turbo            : STABLE                  trend -0.6%
+  SDXL Turbo          : STABLE                  trend +0.8%
+  Segmind Vega        : STABLE                  trend +0.8%
+  SDXL Base           : STABLE                  trend -0.1%
 
-  Overall throughput : 87.3 images/hr
+  Overall throughput : 93.2 images/hr
 
 ============================================================
   Design by Hiko
 ============================================================
 ```
 
-The report is also auto-saved to `endurance_results/report_TIMESTAMP.txt`.
+</details>
 
-**Stability analysis** compares the first half vs the second half of each model's run times. A trend above +5% means the model is slowing down (possible thermal throttling or memory pressure).
+**Stability analysis** compares the average time of the first half of each model's runs with the second half (at least 4 runs per model). A trend above **+5 %** means the model is slowing down — possibly thermal throttling or memory pressure.
 
----
+### How to read the numbers
 
-## Results Reference
+- **Avg(s)** — the full time for one image: process start-up, model loading, text encoding, denoising and VAE decode.
+- **img/hr** — practical throughput built from those full times. For real workloads, **img/hr is what matters**.
+- **it/s** — denoising steps divided by the full per-image time (or the UNet step time, when the SD script reports one). Because start-up and loading are included, SD Turbo and SDXL Turbo — which take a single step — show a tiny it/s; compare their latency instead.
 
-### What is "good" performance?
+### Output files
 
-Based on testing on Ryzen AI 9 HX 370 (XDNA2, 51 TOPS):
-
-| Model | Expected avg(s) | Expected it/s |
-|-------|----------------|---------------|
-| SD 1.5 | ~23 s | ~0.87 it/s |
-| SD Turbo | ~20 s | N/A (1-step) |
-| SDXL Turbo | ~27 s | N/A (1-step) |
-| Segmind Vega | ~33 s | ~0.60 it/s |
-| SDXL Base | ~93 s | ~0.54 it/s |
-
-> Note: SD Turbo and SDXL Turbo are 1-step models. Their `it/s` values are misleadingly low — total latency is the meaningful metric.
-
-### Understanding throughput vs latency
-
-- **it/s** measures how fast each individual denoising step runs on the NPU
-- **img/hr** measures real-world throughput including pipeline overhead (VAE encode/decode, CLIP encoding, process launch)
-- For production use cases, **img/hr is what matters**
-
----
-
-## Project Structure
-
-```
-npu-benchmark-amd/
-├── npu_sd_endurance_gradio.py   # Main benchmark app
-├── README.md
-├── models/                      # Place your ONNX model folders here
-│   ├── sd_15/
-│   ├── sd_turbo_bfp/
-│   ├── sdxl_turbo_bfp/
-│   ├── Segmind-Vega_bfp/
-│   └── sdxl-base-1.0_bfp/
-└── endurance_results/           # Auto-created on first run
-    ├── images/                  # Generated PNG files
-    ├── report_*.txt             # Performance reports
-    └── checkpoint_*.json        # Auto-saved checkpoints (every 30 min)
+```text
+endurance_results/
+├── images/               # every generated image
+├── report_*.txt          # written each time you click Generate Report
+├── checkpoint_*.json     # about every 30 min and when a test ends
+└── chart_*.png           # performance chart, when a test ends (needs matplotlib)
 ```
 
 ---
 
-## Troubleshooting
+## 🛠️ Troubleshooting
 
-### "No models found in models/ folder"
+<details>
+<summary><b>“No models found in models/ folder”</b></summary>
 
-Check that your model folder names match exactly (case-sensitive):
-```
-sd_15  sd_turbo_bfp  sdxl_turbo_bfp  Segmind-Vega_bfp  sdxl-base-1.0_bfp
-```
+Folder names must be spelled exactly: `sd_15` `sd_turbo_bfp` `sdxl_turbo_bfp` `Segmind-Vega_bfp` `sdxl-base-1.0_bfp`
 
-### "FAIL exit=1" in the log
+You will also see this message if the **Lite** tier is selected but you only have Full-tier models (SDXL Turbo, Segmind Vega, SDXL Base) — switch the tier to **Full**.
+</details>
 
-Usually means `DD_ROOT` is not set. Make sure to run:
-```powershell
-set DD_ROOT=C:\Program Files\RyzenAI\1.7.1\GenAI-SD
-```
+<details>
+<summary><b>“FAIL exit=…” in the run log</b></summary>
 
-Or set it permanently in Windows Environment Variables.
+- **exit=2** — the SD script was not found. Check the [RyzenAI install path](#ryzenai-install-path).
+- **exit=1** — the SD script started but crashed: usually the app was started outside the RyzenAI conda environment (the SD scripts run with the same Python), or a model folder is incomplete.
 
-### Browser doesn't open automatically
+The script's own error output is not shown in the run log. To see it, run the SD script for that model by hand from `<install root>\GenAI-SD\test` in the same conda environment.
+</details>
 
-Navigate manually to `http://127.0.0.1:7862`
+<details>
+<summary><b>Generation is slow</b></summary>
 
-### Port 7862 already in use
+Watch the **NPU** reading on the dashboard while an image is generated — if it stays near zero, the model is probably running on the CPU. Check the [RyzenAI install path](#ryzenai-install-path) and that the RyzenAI conda environment is active.
+</details>
 
-Edit the `PORT = 7862` constant at the top of `npu_sd_endurance_gradio.py` to any free port.
+<details>
+<summary><b>Port 7862 is already in use / the browser didn't open</b></summary>
 
-### Generation times seem slow
+Open http://127.0.0.1:7862 manually, or change `PORT = 7862` near the top of `npu_sd_endurance_gradio.py`.
+</details>
 
-Check that VitisAI EP is being used. You should see `unet(NPU)` in the run log. If not, the model may be falling back to CPU/DirectML — ensure `DD_ROOT` is set correctly.
+<details>
+<summary><b>Crash on SDXL Base</b></summary>
 
-### App crashes on SDXL Base
-
-SDXL Base requires ~8 GB RAM for model weights alone. Use Lite tier if you have less than 28 GB total RAM.
-
----
-
-## Why This Exists
-
-AMD Ryzen AI NPUs support native Stable Diffusion inference via the VitisAI execution provider. This tool was built to measure and verify that capability — tracking NPU image generation throughput, stability, and thermal behavior across extended endurance runs.
+SDXL Base needs about 8 GB of RAM for its weights alone. Use the Lite tier on machines with less than 28 GB of RAM.
+</details>
 
 ---
 
-## License
+## 🗺️ Roadmap
 
-The benchmark code (`npu_sd_endurance_gradio.py`) is released under the **MIT License**.
+- [x] AMD Ryzen AI · XDNA2 · Stable Diffusion endurance test
+- [ ] Intel NPU
+- [ ] Qualcomm Hexagon NPU
 
-The AMD RyzenAI SDK, runtime DLLs, and SD model weights are subject to their own respective licenses. This repository does not include any AMD proprietary binaries.
+## 🤝 Contributing
+
+Results from different machines are the most valuable contribution. Ran a benchmark? **[Share your report](https://github.com/npugenai/npu-benchmark/issues/new?template=benchmark-result.yml)** — every new device helps the community. Bug reports and pull requests are welcome too.
+
+## 📄 License
+
+The benchmark code is released under the [MIT License](LICENSE). The AMD RyzenAI SDK, runtime and model weights are covered by their own licenses; this repository contains no AMD binaries.
+
+## 🙏 Acknowledgements
+
+[AMD RyzenAI & VitisAI EP](https://ryzenai.docs.amd.com) · [Gradio](https://gradio.app) · [Segmind](https://huggingface.co/segmind/Segmind-Vega) · [Stability AI](https://huggingface.co/stabilityai)
 
 ---
 
-## Acknowledgements
+<div align="center">
 
-- AMD RyzenAI SDK and VitisAI EP team
-- [Gradio](https://gradio.app) for the browser UI framework
-- [Segmind](https://huggingface.co/segmind/Segmind-Vega) for the Vega model
-- StabilityAI for SD 1.5, SD Turbo, SDXL
+**If this project helps you, please give it a ⭐ — it really helps!**
 
----
+<sub>Made with 💜 by <a href="https://github.com/hiko1999GenAI">hiko1999</a> · part of <a href="https://github.com/npugenai">NPU GenAI</a></sub>
 
-*Design by Hiko — tested on AMD Ryzen AI 9 HX 370 (XDNA2, 51 TOPS)*
+</div>

@@ -1,0 +1,18 @@
+# Benchmark output (generated images, reports, checkpoints)
+endurance_results/
+results/
+
+# Model weights — download separately (see README)
+models/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
